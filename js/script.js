@@ -3,6 +3,8 @@ const gitUserName = "kdaltondev";
 const repoList = document.querySelector(".repo-list");
 const repos = document.querySelector(".repos");
 const repoData = document.querySelector(".repo-data");
+const backToRepoBtn = document.querySelector(".view-repos");
+const filterInput = document.querySelector(".filter-repos");
 
 const getUserInfo = async function () {
   const info = await fetch(`https://api.github.com/users/${gitUserName}`);
@@ -44,6 +46,7 @@ const getRepoList = async function () {
 };
 
 displayRepoInfo = function (repoData) {
+  filterInput.classList.remove("hide");
   for (let i = 0; i < repoData.length; i++) {
     console.log(`${repoData[i].name}`);
     const li = document.createElement("li");
@@ -99,4 +102,31 @@ displaySpecificRepoInfo = function (repoInfo, languages) {
   repoData.append(displayRepoData);
   repoData.classList.remove("hide");
   repos.classList.add("hide");
+  backToRepoBtn.classList.remove("hide");
 };
+
+backToRepoBtn.addEventListener("click", function () {
+  repoData.classList.add("hide");
+  repos.classList.remove("hide");
+  backToRepoBtn.classList.add("hide");
+  /*filterInput.value = "";*/
+});
+
+filterInput.addEventListener("input", function (e) {
+  console.log(e.target.value);
+  const reposAll = document.querySelectorAll(".repo");
+  console.log(reposAll.length);
+  let searchText = e.target.value;
+  let searchTextLower = searchText.toLowerCase();
+  for (let i = 0; i < reposAll.length; i++) {
+    let repoName = reposAll[i].innerText;
+    let repoLowerCaseName = repoName.toLowerCase();
+    if (repoLowerCaseName.includes(searchTextLower)) {
+      reposAll[i].parentElement.classList.remove("hide");
+    } else {
+      reposAll[i].parentElement.classList.add("hide");
+    }
+    console.log(repoLowerCaseName);
+  }
+  console.log(searchTextLower);
+});
